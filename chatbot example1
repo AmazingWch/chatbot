@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int getInput(char [128]);
+int removeSpaces(char [128]);
+
+int main()
+{
+    char input[128];
+    printf("**************************Chatbot****************************\n>>Hello");
+
+    do
+    {
+        printf(">> ");
+        gets(input);
+        getInput(input);
+
+    }
+    while(1);
+
+}
+
+int getInput(char input[128])
+{
+    char array[128];
+    FILE *fp = fopen("data.txt", "r");
+    if(!fp)
+    {
+        printf("Error!");
+    }
+    while(!feof(fp))
+    {
+        fgets(array, 128, fp);
+        if(strncmp(array,input,strlen(input)==0))
+        {
+            fgets(array, 128, fp);
+            printf("%s", array);
+            removeSpaces(array);
+
+        }
+    }
+    return 0;
+}
+
+int removeSpaces(char text[128])
+{
+    char blank[100000];
+    int c=0;
+    int d=0;
+
+    while (text[c] != '\0')
+    {
+        if(text[c] == ' ')
+        {
+            text[c] = '_';
+            int temp = c+1;
+            if (text[temp] != '\0');
+            {
+                while (text[temp] != ' ' && text[temp] != '\0')
+                {
+                    if(text[temp] == ' ')
+                    {
+                        text[temp] = '_';
+                        c++;
+                    }
+                    temp++;
+                }
+            }
+        }
+        blank[d] = text[c];
+        c++;
+        d++;
+    }
+
+    blank[d] = '\0';
+    const char command[] = "espeak";
+    strcat(command,blank);
+    system(command);
+}
+
+
