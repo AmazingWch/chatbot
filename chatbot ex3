@@ -1,0 +1,94 @@
+# include <stdio.h>
+# include <stdlib.h>
+
+# define MAXSTR 200
+# define REBOT "Amazing said: "
+# define YOUR "You say: "
+# define EXIT "-e\n"
+# define NOREPLY "我不知道你说什么呢!\n"
+
+char *GetRebot(char *str, char *reply); //处理接收的对话内容，返回机器人回复内容
+void DelHr(char *str); //删除获取到的字符串中的换行
+void RobotSay(char *str); //机器人回复
+
+int main(void)
+{
+    char str[1024];
+    char reply[600];
+    printf("*************************************Chatbot****************************************\n");
+    printf("\n%sHI,I am Amazing James, Nice to meet you^ ^ (You can enter -+ to exit our chat).\n\n",REBOT);
+    printf("************************************************************************************\n\n");
+
+    do
+    {
+        printf("%s",YOUR);
+        scanf("%s",str);
+        printf("%s",REBOT);
+
+        if (str[0] != '-' && str[1] != '+' )
+        {
+            GetRebot(str, reply);
+            RobotSay(reply);
+            printf("\n");
+        }
+        else
+            printf("Looking forward to our next chat~\n");
+    }while(str[0] != '-' && str[1] != '+' );
+
+    return 0;
+}
+
+char *GetRebot(char *str, char *reply)
+{
+    static char keywords[500];
+    int i = 0;
+    FILE * fp;
+
+
+    if( (fp = fopen("reply","r")) == NULL)
+    {
+        printf("缺少核心文件!!\n");
+        exit(-1);
+    }
+
+    while ( !feof(fp) ) //获取关键字
+    {
+        i++;
+        fgets(keywords, 500, fp);
+        DelHr(keywords);
+
+
+            if( strstr(str, keywords) != 0 )
+            {
+                fgets(reply, 500, fp);
+                printf("happy");
+                fclose(fp);
+                return reply;
+            }/*
+            else{
+                strcpy(reply, "sorry");
+                return reply;
+            }*/
+
+
+    }
+}
+
+void DelHr(char *str)
+{
+    int i,j;
+
+    for(i=0; str[i] != '\0'; i++)
+    {
+        if(str[i] == '\n')
+        {
+            for(j=i; str[j] != '\0'; j++)
+                str[j] = str[j+1];
+        }
+    }
+}
+
+void RobotSay(char *str)
+{
+    printf("%s\n", str);
+}
