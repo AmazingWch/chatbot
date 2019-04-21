@@ -1,0 +1,16 @@
+int chat(void)
+{
+    
+
+HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole,FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_INTENSITY); //用户气泡
+    printf("◆User：");
+
+    int message ;
+    char string[20] = {0};//清零
+
+    gets(string); //获取用户的聊天内容
+    printf("\n");
+    SetConsoleTextAttribute(hConsole,FOREGROUND_GREEN|FOREGROUND_INTENSITY); //机器人气泡
+
+}
