@@ -1,0 +1,16 @@
+ else
+    {
+        message = ( rand() % 3 ) ;	 			//取随机数（0~2）
+
+        if( 0 == message )
+        {
+            printf("●机器人：I'm not sure I understand what you're saying...\n\n");
+        }
+        else if( 1 == message )
+        {
+            printf("●机器人：Sorry, I didn't catch you.\n\n");
+        }
+        else if( 2 == message )
+        {
+            printf("●机器人：Sorry, I didn't catch your meaning!\n\n");
+        }
