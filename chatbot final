@@ -1,0 +1,229 @@
+
+/*				头文件					*/
+# include <windows.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stdio.h>
+
+/*				声明函数				*/
+int chat(void);											//和机器人聊天
+void MainMean(void);									//显示标题，设置窗口
+void gotxy(int x, int y);								//光标到指定位置
+int CheckNegative(char *c_string);						//检查是否有消极
+int CheckDirtywords(char *c_string);						//检查是否有骂人内容
+int FindSpecifiedText(char *a_string,char *f_string);	//在指定文本中寻找字符串
+
+/*				全局变量				*/
+int warning = 0;	//惩罚机制
+
+
+int main(void)
+{
+
+    MainMean();
+
+    HWND hWnd = FindWindow(NULL,"Pineapple Chat Robot"); //★FindWindow靠名字来取得句柄
+
+    srand((unsigned)time(NULL));			//随机数种子
+    int tips = ( rand() % 5 ) ;	 			//取随机数（0~4）
+    if( 0 == tips )
+    {
+        MessageBox(hWnd,TEXT("本程序有惩罚机制哦，在你骂人的时候，机器人就会惩罚你"),TEXT("小提示：【随机】"),MB_OK);
+    }
+    else if( 1 == tips )
+    {
+        MessageBox(hWnd,TEXT(""),TEXT("小提示：【随机】"),MB_OK);
+    }
+    else if( 2 == tips )
+    {
+        MessageBox(hWnd,TEXT("本程序里有一些隐藏功能哦，期待你的发现"),TEXT("小提示："),MB_OK);
+    }
+    else if( 3 == tips )
+    {
+        MessageBox(hWnd,TEXT("和机器人聊天的过程中 如果你发“QQ”，机器人会告诉你作者的QQ哦"),TEXT("小提示：【随机】"),MB_OK);
+    }
+    else if( 4 == tips )
+    {
+        MessageBox(hWnd,TEXT("祝你玩的开心！只要你想，机器人会一直陪着你的 "),TEXT("小提示：【随机】"),MB_OK);
+    }
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    SetConsoleTextAttribute(hConsole,FOREGROUND_GREEN|FOREGROUND_INTENSITY); //机器人气泡
+
+    while(1)
+    {
+        if(chat())	//和机器人聊天
+        {
+            exit (0);//结束程序
+        }
+    }
+
+    return 0;
+
+}
+/*
+=================================================
+本函数作用：显示标题和设置窗口
+=================================================
+*/
+void MainMean(void)
+{
+    system("title Pineapple Chat Robot");			//改变窗口标题
+    system("mode con: cols=38 lines=30");		//改变窗口大小
+    system("cls");    							//清屏
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole,FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY); //设置控制台字体颜色
+    printf( "                                  \n"
+            "         Pineapple Chat Robot      \n"
+            "                                  \n");
+    SetConsoleTextAttribute(hConsole,FOREGROUND_GREEN|FOREGROUND_INTENSITY|COMMON_LVB_GRID_HORIZONTAL); //机器人气泡
+    printf( "★输入聊天内容↓                     \n\n" );
+    return 0;
+}
+
+/*
+====================================
+函数作用：在指定文本中寻找字符串
+参数1：待寻找的字符串
+参数2：用作寻找的字符串
+返回值：找到返回0，没有找到返回1
+====================================
+*/
+int FindSpecifiedText(char *a_string,char *f_string)
+{
+    int a_n =0, f_n = 0,same;
+    while( a_string[a_n] != '\0' )	//检测待寻找的字符串是否结束
+    {
+        if( a_string[a_n] == f_string[f_n])	//如果第一个“字符”相等，则进入继续判断
+        {
+            same = 1 ;
+//stricmp
+            while(a_string[++a_n] == f_string[++f_n])
+            {
+                if( f_string[f_n] != '\0' )
+                {
+                    ++same;	//计算相同字符的个数
+                }
+            }
+
+        }
+        a_n++;
+
+    }
+
+    f_n = 0;
+    while( f_string[f_n++] != '\0' ) //利用while语句计算用作寻找的字符串的数量（包含'/0'）
+    {
+        ;
+    }
+
+
+    if( same == --f_n )  //如果相同字符的个数等于用作寻找的字符串的数组个数 那么说明有相同
+        return 0;
+    else
+        return 1;
+
+}
+/*
+==============================
+函数作用：检查是否有黄段子
+函数参数：待检查的字符串
+返回值：检查到返回0，否则返回1
+==============================
+*/
+int CheckNegative(char *c_string)
+{
+
+    if( ! FindSpecifiedText(c_string,"give up") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"lazy") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"flinch") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"afraid") )
+        return 0;
+    else
+        return 1;
+}
+
+/*
+==============================
+函数作用：检查是否有骂人内容
+函数参数：待检查的字符串
+返回值：检查到返回0，否则返回1
+==============================
+*/
+int CheckDirtywords(char *c_string)
+{
+    if( ! FindSpecifiedText(c_string,"shit") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"damn") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"shut up") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"asshole") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"idiot") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"fuck") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"jerk") )
+        return 0;
+    else if ( ! FindSpecifiedText(c_string,"hell") )
+        return 0;
+
+    else
+        return 1;
+}
+
+
+
+
+int chat(void)
+{
+    ; //用户和机器人的聊天内容
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole,FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_INTENSITY); //用户气泡
+    printf("◆User：");
+
+    int message ;
+    char string[20] = {0};//清零
+
+    gets(string); //获取用户的聊天内容
+    printf("\n");
+    SetConsoleTextAttribute(hConsole,FOREGROUND_GREEN|FOREGROUND_INTENSITY); //机器人气泡
+
+
+    else if( ! FindSpecifiedText(string,"笑话") )
+    {
+        printf("●机器人：我给你讲个小笑话。从前有个人…哈哈哈\n\n");
+    }
+
+
+    else
+    {
+        message = ( rand() % 3 ) ;	 			//取随机数（0~2）
+
+        if( 0 == message )
+        {
+            printf("●机器人：I'm not sure I understand what you're saying...\n\n");
+        }
+        else if( 1 == message )
+        {
+            printf("●机器人：Sorry, I didn't catch you.\n\n");
+        }
+        else if( 2 == message )
+        {
+            printf("●机器人：Sorry, I didn't catch your meaning!\n\n");
+        }
+
+
+    }
+
+
+    return 0;
+}
+
+
+
