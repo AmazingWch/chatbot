@@ -1,0 +1,61 @@
+if( warning > 3  && warning < 10 )
+    {
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//系统提示气泡
+        printf("★机器人拒绝接受你的信息\n\n");
+        warning++;
+    }
+    else if( warning > 10 )
+    {
+        printf("●机器人：哈哈，你是不是怕了？帮你取消吧\n\n");
+        system("shutdown -a");	//取消关机
+        warning = 0;
+    }
+    else if( ! CheckDirtywords(string) )
+    {
+        if( 0 == warning )
+        {
+            srand((unsigned)time(NULL));			//随机数种子
+            message = ( rand() % 2 ) ;	 			//取随机数（0~4）
+            if( 0 == message )
+            {
+                printf("●机器人：Don't name-call.\n\n");
+            }
+            else if(  1 == message )
+            {
+                printf("●机器人：No name calling!\n\n");
+            }
+
+        }
+        else if( 1 == warning )
+        {
+            printf("●机器人：这么嚣张，我给你点教训。欢迎继续侮辱我\n\n");
+            int i;
+            for( i = 0 ; i < 10 ; i++ )	//弹出10个命令提示符（惩罚机制1）
+            {
+                system("start");
+            }
+            SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//系统提示气泡
+            printf("★机器人帅气地丢给你10个命令提示符\n\n");
+        }
+        else if( 2 == warning )
+        {
+            printf("●机器人：既然你还这么不服,那我就继续给惩罚\n\n");
+            int a;
+            for( a = 0 ; a < 20 ; a++ )	//弹出20个命令提示符 （惩罚机制2）
+            {
+                system("start");
+            }
+            SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//系统提示气泡
+            printf("★机器人再次帅气地丢给你20个命令提示符\n\n");
+        }
+        else if( 3 == warning )
+        {
+            printf("●机器人：好吧我输了，再见\n\n");
+            system("shutdown -s -t 180");     	//3分钟后关机（惩罚机制2）
+            SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//系统提示气泡
+            printf("★机器人认输了 你真棒\n\n");
+        }
+
+        warning++; //惩罚机制+1
+
+    }
