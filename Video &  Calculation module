@@ -1,0 +1,21 @@
+    else if( ! FindSpecifiedText(string,"看视频") )
+    {
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//系统提示气泡
+        system("start https://v.qq.com/x/cover/bzfkv5se8qaqel2.html");	//打开网站【天线宝宝】
+        printf("★机器人:Do you like this video?\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"电影") )
+    {
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//系统提示气泡
+        system("start https://v.qq.com");	//打开网站【天线宝宝】
+        printf("★机器人: Find a video you love!\n\n");
+    }
+    
+    else if( ! FindSpecifiedText(string,"calculate") || ! FindSpecifiedText(string,"+")
+            || ! FindSpecifiedText(string,"-") || ! FindSpecifiedText(string,"*") || ! FindSpecifiedText(string,"/"))
+    {
+        printf("●Pineapple：You can use this calculator!\n\n");
+        system("calc");	//Open the calculator
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+        printf("★Pineapple tosses out the calculator for you.\n\n");
+    }
