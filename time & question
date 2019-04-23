@@ -1,0 +1,15 @@
+else if( ! FindSpecifiedText(string,"question") )
+    {
+        printf("●Pineapple：I'll get my teacher over for you. Don't thank me!\n\n");
+        system("start https://www.baidu.com/"); 			// Open Baidu
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+        printf("★Pineapple opened baidu for you\n\n");
+    }
+    
+    
+    else if( ! FindSpecifiedText(string,"time") || ! FindSpecifiedText(string,"when") )
+    {
+        time_t sec  = time(NULL);
+        struct tm t = *localtime(&sec);
+        printf("●Pineapple：%04d.%01d.%02d %02d:%02d:%02d  \n\n", 1900+t.tm_year, 1+t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+    }
