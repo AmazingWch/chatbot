@@ -1,0 +1,519 @@
+# include <windows.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stdio.h>
+# include <time.h>
+//# include "chatbotStructure.h"
+int warning=0;
+int GetWords(char *sentence, char *words[]);
+
+int chat(void)
+{
+    int message;
+    int i;
+    char string[30] = {0};//reset
+    int nWords = 0;
+    char *words[20] = {0};
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole,FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_INTENSITY); //用户气泡
+    printf("◆User：");
+
+    gets(string); //Get the user's chat content
+    /*for(i=0; string[i]!='\0'; i++)
+    {
+        if(string[i]>='A'&&string[i]<='Z')//表示是大写字母
+        {
+            string[i]+=32;
+        }
+
+    }*/
+   /* nWords = GetWords(string, words);
+    for(i=0; i<nWords; i++)
+    {
+        puts(words[i]);
+    }*/
+
+
+    printf("\n");
+    SetConsoleTextAttribute(hConsole,FOREGROUND_GREEN|FOREGROUND_INTENSITY); //Chatbot speak
+
+
+    if( warning == 4)
+    {
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+        printf("★Pineapple refuse to accept your message!! Unless you apologize to me(say 'sorry')\n\n");
+        warning++;
+    }
+    else if( warning == 5 )
+    {
+        printf("●Pineapple：Know you're wrong? Let me cancel it for you!\n\n");
+        system("shutdown -a");	//Cancel shutdown
+        warning = 0;
+    }
+    else if( ! CheckDirtywords(string) )
+    {
+        if( 0 == warning )
+        {
+            srand((unsigned)time(NULL));			//Random number seed
+            message = ( rand() % 2 ) ;	 			//Take random number (0~4)
+            if( 0 == message )
+            {
+                printf("●Pineapple：Don't name-call.\n\n");
+            }
+            else if(  1 == message )
+            {
+                printf("●Pineapple：No name calling!\n\n");
+            }
+
+        }
+        else if( 1 == warning )
+        {
+            printf("●Pineapple：Someone's gonna teach you a lesson! \n\n");
+            int i;
+            for( i = 0 ; i < 5 ; i++ )	//5 command prompts pop up (penalty mechanism 1)
+            {
+                system("start");
+            }
+            SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+            printf("★Pineapple is going to throw you 5 command prompts\n\n");
+        }
+        else if( 2 == warning )
+        {
+            printf("●Pineapple：Keep swearing? More punishment! \n\n");
+            int a;
+            for( a = 0 ; a < 10 ; a++ )	//10 command prompts pop up (penalty mechanism 2)
+            {
+                system("start");
+            }
+            SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+            printf("★Pineapple is going to throw you 10 command prompts\n\n");
+        }
+        else if( 3 == warning )
+        {
+            printf("●Pineapple：Okay, I lost. Bye~\n\n");
+            system("shutdown -s -t 180");     	//Power off after 3 minutes (punishment mechanism 2)
+            SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+            printf("★Pineapple will turn off your computer after 3 mins!\n\n");
+        }
+
+        warning++; //Penalty mechanism +1
+
+    }
+    else if( ! CheckNegative(string) )
+    {
+        message = ( rand() % 4 ) ;	 			//Take random number (0~3)
+        if( ! message )
+        {
+            printf("●Pineapple：Cheer up! Don't give up!\n\n");
+        }
+        else if(  1 == message )
+        {
+            printf("●Pineapple：Cheer up! Your trouble will soon be over.\n\n");
+        }
+        else if( 2 == message )
+        {
+            printf("●Pineapple：Come, cheer up!\n\n");
+        }
+        else if( 3 == message )
+        {
+            printf("●Pineapple：Don't be afraid of challenges!\n\n");
+        }
+        system("start C:\\Users\\98505\\Desktop\\pineapple\\1.jpg");
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+        printf("★Don't be afraid of challenges!\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"relax") )
+    {
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+        system("start https://v.qq.com/x/cover/bzfkv5se8qaqel2.html");	//Open a video website
+        printf("★Pineapple:Do you like this video?\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"movie") )
+    {
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+        system("start https://v.qq.com");	//Open the video website
+        printf("★Pineapple: Find a video you love!\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"joke") )
+    {
+        printf("●Pineapple：Let me tell you a little joke. Once upon a time there was a man... Ha, ha, ha\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"news") )
+    {
+        printf("●Pineapple：Yesterday evening, a baozi in tianjin went to beat a dog and never came back, xinhua reported.\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"sing") )
+    {
+        printf("●Pineapple：Sing a song? I'll let you hear my voice before you decide\n\n");
+        Sleep(500);
+        printf("\a\a\a");//make a sound
+        printf("★Pineapple makes a nice sound~\n\n");
+    }
+
+    else if( ! FindSpecifiedText(string,"calculate") || !FindSpecifiedText(string, "add")
+             || !FindSpecifiedText(string, "minus") || !FindSpecifiedText(string, "multiply")
+             || !FindSpecifiedText(string, "divide")) //Calculation module
+    {
+        printf("●Pineapple：You can use this calculator!\n\n");
+        system("calc");	//Open the calculator
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+        printf("★Pineapple tosses out the calculator for you.\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"hello") || ! FindSpecifiedText(string,"hi ") )
+    {
+        printf("●Pineapple：Hi, nice to meet you! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"run") )
+    {
+        printf("●Pineapple：Running every day is good for your health!\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"hungry") )
+    {
+        printf("●Pineapple：Why not eat something you like?\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"eat") )
+    {
+        printf("●Pineapple：What would you like to eat?\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"sleep") )
+    {
+        printf("●Pineapple：When do you go to sleep? \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"love") )
+    {
+        printf("●Pineapple：I love you, I know it. \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"other") )
+    {
+        printf("●Pineapple：Tell me about it.\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"boring") )
+    {
+        printf("●Pineapple：Let me chat with you. I know a lot of things! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"question") || !FindSpecifiedText(string,"baidu"))
+    {
+        printf("●Pineapple：I'll get my teacher over for you. Don't thank me!\n\n");
+        system("start https://www.baidu.com/"); 			// Open Baidu
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+        printf("★Pineapple opened baidu for you\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"thank") )
+    {
+        message = ( rand() % 3 ) ;	 			//Take random number（0~2）
+        if( 0 ==  message )
+        {
+            printf("●Pineapple：Don't mention it. It's a piece of cake for me.\n\n");
+        }
+        else if( 1 == message )
+        {
+            printf("●Pineapple：You're welcome. I'm Pineapple.\n\n");
+        }
+        else if( 2 == message )
+        {
+            printf("●Pineapple：You're welcome. Why are you being polite to me~\n\n");
+        }
+
+    }
+
+    else if( ! FindSpecifiedText(string,"host") || ! FindSpecifiedText(string,"writer"))
+    {
+        printf("●Pineapple：My host is James and I was born in 2019\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"qq") )
+    {
+        printf("●Pineapple：I don't have QQ, my master QQ is 985054373。Let me open up my master's qzone for you.\n\n");
+        system("start http://user.qzone.qq.com/985054373/main"); //open qzone.
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);//System prompt bubble
+        printf("★Pineapple opens up his master's qzone for you\n\n");
+    }
+
+    else if( ! FindSpecifiedText(string,"password") )
+    {
+        printf("●Pineapple：The password is *****, slowly decipher it!\n\n");
+    }
+
+    else if( ! FindSpecifiedText(string,"c language"))
+    {
+        printf("●Pineapple：How did you know I was made by C?!\n\n");
+    }
+
+    else if( ! FindSpecifiedText(string,"pineapple")  || ! FindSpecifiedText(string,"Pineapple") )
+    {
+        printf("●Pineapple：Did you call my name? ^_^ \n\n");
+    }
+
+    else if( ! FindSpecifiedText(string,"happy") )
+    {
+        printf("●Pineapple：I wish you happy every day! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"sad") )
+    {
+        printf("●Pineapple：Why are you sad? \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"laugh"))
+    {
+
+        message = ( rand() % 3 ) ;	 			//Take random number（0~2）
+
+        if( 0 == message )
+        {
+            printf("●Pineapple：Why are you laughing so hard? \n\n");
+        }
+        else if( 1 == message )
+        {
+            printf("●Pineapple：You smile not as lovely as I smile!\n\n");
+        }
+        else if( 2 == message )
+        {
+            printf("●Pineapple：Are you in a good mood?\n\n");
+        }
+
+    }
+    else if( ! FindSpecifiedText(string,"yes") || ! FindSpecifiedText(string,"ok"))
+    {
+        printf("●Pineapple：good! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"name") )
+    {
+        printf("●Pineapple：My name is Pineapple!\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"leeds time"))
+    {
+        SYSTEMTIME stCurTime = {0};
+        GetSystemTime(&stCurTime); // UTC时间
+        printf("●Pineapple：Leeds time is: %04d.%01d.%02d %02d:%02d:%02d\n\n",
+               stCurTime.wYear, stCurTime.wMonth, stCurTime.wDay,
+               1+stCurTime.wHour, stCurTime.wMinute, stCurTime.wSecond);
+    }
+    else if( ! FindSpecifiedText(string,"time")|| ! FindSpecifiedText(string,"china time"))
+    {
+        time_t sec  = time(NULL);
+        struct tm t = *localtime(&sec);
+        printf("●Pineapple：China time is: %04d.%01d.%02d %02d:%02d:%02d\n\n",
+               1900+t.tm_year, 1+t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+        printf("●Pineapple：By the way, I also know Leeds time! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"can you") )
+    {
+        printf("●Pineapple：What can I do for you?\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"88")||! FindSpecifiedText(string,"bye") )
+    {
+        printf("●Pineapple：Nice talking to you. See you next time! \n\n");
+        return 1;
+    }
+    else if( ! FindSpecifiedText(string,"where") || ! FindSpecifiedText(string,"address") )
+    {
+        printf("●Pineapple：I am here! \n\n");
+    }
+
+
+    else if(  ! FindSpecifiedText(string,"many") )
+    {
+        message = ( rand() % 2 ) ;	 			//Take random number（0~1）
+
+        if( 0 == message )
+        {
+            printf("●Pineapple：Well, I don't know.\n\n");
+        }
+        if( 1 == message )
+        {
+            printf("●Pineapple：As much as you say.\n\n");
+        }
+    }
+    else if( ! FindSpecifiedText(string,"gender") )
+    {
+        printf("●Pineapple：I'm a man! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"age") )
+    {
+        printf("●Pineapple：I'm 3 years old! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"who")  )
+    {
+        printf("●Pineapple：I am Pineapple!\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"hit") )
+    {
+        printf("●Pineapple：Are you sure? My head is harder than steel\n\n");
+    }
+    else if(  ! FindSpecifiedText(string,"study") )
+    {
+        printf("●Pineapple：I feel bad without studying for a day\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"doing"))
+    {
+        printf("●Pineapple：I'm talking to you!\n\n");
+    }
+
+
+
+    /*else if( ! FindSpecifiedText(string,"") )
+    {
+        message = ( rand() % 3 ) ;	 			//Take random number（0~2）
+        if( ! message )
+        {
+            printf("●Pineapple：你猜\n\n");
+        }
+        else if( 1 == message )
+        {
+            printf("●Pineapple：是\n\n");
+        }
+        else if( 2 == message )
+        {
+            printf("●Pineapple：不是\n\n");
+        }
+    }*/
+    else if( ! FindSpecifiedText(string,"apple") )
+    {
+        printf("●Pineapple：Is your mobile phone apple's? \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"air") )
+    {
+        printf("●Pineapple：Let us go out for some fresh air! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"april") )
+    {
+        printf("●Pineapple：April Fool's Day is the 1st of April! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"ask") )
+    {
+        printf("●Pineapple：What do you want to ask? \n\n");
+    }
+
+
+
+
+    else if( ! FindSpecifiedText(string,"back")  )
+    {
+        printf("●Pineapple：Will you look at the dirt on the back of your neck! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"bad") )
+    {
+        printf("●Pineapple：It’s difficult to break bad habits. \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"because"))
+    {
+        printf("●Pineapple：Actually, I came to you by some coincidence.\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"book") )
+    {
+        printf("●Pineapple：Books are human treasures. \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"行不行") )
+    {
+        printf("●Pineapple：行啊，只要你想\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"不信") )
+    {
+        printf("●Pineapple：是吗，怎么才信呢\n\n");
+    }
+
+    else if( ! FindSpecifiedText(string,"how old"))
+    {
+        printf("●Pineapple：I am only 3! \n\n");
+    }
+    else if( ! FindSpecifiedText(string,"免费") )
+    {
+        printf("●Pineapple：那也不行！\n\n");
+    }
+
+
+
+
+    else if( ! FindSpecifiedText(string,"我") )
+    {
+        if( ! FindSpecifiedText(string,"伤心")/*||! FindSpecifiedText(string,"哭")*/)
+        {
+            printf("●Pineapple：谁欺负你了 我替你打他\n\n");
+        }
+        else if( ! FindSpecifiedText(string,"帮我") )
+        {
+            printf("●Pineapple：我不帮你 自己的事自己做\n\n");
+        }
+        else if( ! FindSpecifiedText(string,"生气") )
+        {
+            printf("●Pineapple：哦，关我什么事\n\n");
+        }
+        else
+        {
+            printf("●Pineapple：你怎么了\n\n");
+        }
+    }
+    else if( ! FindSpecifiedText(string,"才") )
+    {
+        printf("●Pineapple：怎么这么晚\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"love"))
+    {
+        printf("●Pineapple：I love my master. \n\n");
+    }
+    else if(  ! FindSpecifiedText(string,"不如") )
+    {
+        printf("●Pineapple：好啊 好啊\n\n");
+    }
+    else if( ! FindSpecifiedText(string,"你") )
+    {
+        if( ! FindSpecifiedText(string,"你真"))
+        {
+            printf("●Pineapple：一般一般，天下第三\n\n");
+        }
+
+        else if( ! FindSpecifiedText(string,"你猜") )
+        {
+            printf("●Pineapple：你猜我猜不猜？\n\n");
+        }
+
+        else if( ! FindSpecifiedText(string,"你好") )
+        {
+            printf("●Pineapple：你好啊，我最喜欢跟人聊天了\n\n");
+        }
+
+        else
+        {
+            printf("●Pineapple：Pardon? What's wrong with me?\n\n");
+        }
+    }
+
+
+    else
+    {
+        message = ( rand() % 3 ) ;	 			//Take random number（0~2）
+
+        if( 0 == message )
+        {
+            printf("●Pineapple：I'm not sure I understand what you're saying...\n\n");
+        }
+        else if( 1 == message )
+        {
+            printf("●Pineapple：Sorry, I didn't catch you.\n\n");
+        }
+        else if( 2 == message )
+        {
+            printf("●Pineapple：Sorry, I didn't catch your meaning!\n\n");
+        }
+
+    }
+    return 0;
+}
+
+
+int GetWords(char *sentence,char *words[])
+{
+/******start******/
+    int i=0;
+    char *p;
+    p=strtok(sentence," ,.");
+    while(p!=NULL)
+    {
+        words[i]=p;
+        i++;
+        p=strtok(NULL," ,.");
+
+    }
+
+    return i;
+/******end******/
+}
