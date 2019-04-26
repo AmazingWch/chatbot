@@ -1,0 +1,36 @@
+# include <windows.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stdio.h>
+# include <time.h>
+# include "hwindow.h"
+# include "hmessageBox.h"
+# include "hfind.h"
+# include "hedit.h"
+# include "hcheck.h"
+# include "hgetWord.h"
+# include "hchat.h"
+
+
+int main(void)
+{
+
+    MainMean();
+
+    messageBox();
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    SetConsoleTextAttribute(hConsole,FOREGROUND_GREEN|FOREGROUND_INTENSITY); //Robot speak
+
+    while(1)
+    {
+        if(chat())	//Start chatting with chatbot
+        {
+            exit (0);//end the program
+        }
+    }
+
+    return 0;
+
+}
